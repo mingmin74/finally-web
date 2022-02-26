@@ -7,15 +7,13 @@
 </template>
 
 <script>
-import Login from './views/Login'
+
 import CommonHeader from './components/CommonHeader'
-import CommonFooter from './components/CommonFooter.vue'
 export default {
   name: 'App',
   components: {
-    Login,
+
     CommonHeader,
-    CommonFooter
   }
 }
 </script>
