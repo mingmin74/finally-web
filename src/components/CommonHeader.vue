@@ -64,7 +64,7 @@
             已关注
             </a-menu-item>
             <a-menu-item key="publish">
-                <a-button @click="">发布</a-button>
+                <a-button >发布</a-button>
             </a-menu-item>
         </a-menu>
     </div>
