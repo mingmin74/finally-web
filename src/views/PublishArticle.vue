@@ -1,7 +1,7 @@
 <template>
   <div class="publish_article">
      <a-textarea
-      v-model:value="titleVal"
+      v-model:value="obj.title"
       placeholder="请输入标题..."
       :auto-size="{ minRows: 1, maxRows: 5 }"
     />
@@ -14,14 +14,14 @@
           <a-cascader
           :options="options"
           placeholder="请选择或输入话题名称"
-          v-model:value="searchValue"
+          v-model:value="obj.category"
           :show-search="{ filter }"
       />
       <a-divider />
     </div>
      <div class="save">
         <a-button style="margin-right:50px">保存至草稿箱</a-button>
-        <a-button type="primary" @click="publish">发布</a-button>
+        <a-button type="primary" @click="publishArticle">发布</a-button>
      </div>
    
   </div>
@@ -29,7 +29,7 @@
 
 <script>
 import httpServe from '../api/request'
-import {AppstoreOutlined} from '@ant-design/icons-vue';
+import { AppstoreOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import hljs from 'highlight.js'
 import 'highlight.js/styles/monokai-sublime.css'
@@ -40,74 +40,88 @@ export default {
   components:{
     AppstoreOutlined
   },
-  
   setup() {
-     const filter = (inputValue, path) => {
+    const filter = (inputValue, path) => {
       return path.some(option => option.label.indexOf(inputValue) > -1);
     };
-      const searchValue = ref();
-      const options=ref([])
-      const titleVal = ref();
-      const editor = ref();
-      let instance;
-      onMounted(() => {
-          getOptions()
-          instance = new WangEditor(editor.value);
-          Object.assign(instance.config, {
-              onchange() {
-                  console.log('change');
-              },
-          });
-          instance.config.menus = [
-              'link',
-              'quote',
-              'emoticon',
-              'image',
-              'video', 
-              'code', 
-              'undo',
-              'redo',      
-          ];
-          instance.config.height = 250
-          // 挂载highlight插件
-          instance.highlight = hljs
-          //关闭全屏显示
-          instance.config.showFullScreen = false
-          // 隐藏插入网络图片的功能
-          instance.config.showLinkImg = false
-          // 配置 server 接口地址
-          instance.config.uploadImgServer = '/upload-img'
-          // 编辑区域 focus（聚焦）和 blur（失焦）时触发的回调函数。
-          instance.config.onblur = function (newHtml) {
-          console.log('onblur', newHtml)
-            // 获取最新的 html 内容
-          }
-          instance.create();
+    // const searchValue = ref();
+    const options=ref([])
+    // const titleVal = ref();
+    const editor = ref();
+    let instance;
+    const obj=reactive({
+      title:'',
+      content:'',
+      category:''
+    })
+    onMounted(() => {
+      getOptions()
+      instance = new WangEditor(editor.value);
+      Object.assign(instance.config, {
+          onchange() {
+              console.log('change');
+          },
+      });
+      instance.config.menus = [
+          'link',
+          'quote',
+          'emoticon',
+          'image',
+          'video', 
+          'code', 
+          'undo',
+          'redo',      
+      ];
+      instance.config.height = 250
+      // 挂载highlight插件
+      instance.highlight = hljs
+      //关闭全屏显示
+      instance.config.showFullScreen = false
+      // 隐藏插入网络图片的功能
+      instance.config.showLinkImg = false
+      // 配置 server 接口地址
+      instance.config.uploadImgServer = '/upload-img'
+      // 编辑区域 focus（聚焦）和 blur（失焦）时触发的回调函数。
+      instance.config.onblur = function (newHtml) {
+      console.log('onblur', newHtml)
+      obj.content=newHtml
+        // 获取最新的 html 内容
+      }
+      instance.create();
       });
       
-      onBeforeUnmount(() => {
-          instance.destroy();
-          instance = null;
-      });
-      function publish(){
-        if(!titleVal.value){
-          message.info('标题为空不可提交')
+    onBeforeUnmount(() => {
+      instance.destroy();
+      instance = null;
+    });
+    function checkPublish(){
+      if(!obj.title){
+        message.info('标题为空不可提交')
+        return false
+      }
+      console.log(obj.title);
+      if(!instance.txt.html()){
+        message.info('内容为空不可提交')
+        return false
+      }
+      console.log(instance.txt.html());
+      if(!obj.category){
+        message.info('请选择分类')
+        return false
+      }
+       console.log(obj.category);
+       return true
+    }
+      function publishArticle(){
+        if(!checkPublish()){
+          console.log('不行');
           return
         }
-        if(!instance.txt.html()){
-          message.info('内容为空不可提交')
-          return
-        }
-          if(!searchValue.value){
-          message.info('请选择分类')
-          return
-        }
-        let obj={
-          title:titleVal,
-          content:instance.txt.html(),
-          category:searchValue
-        }
-        console.log('obj',obj);
+        console.log('obj---------------------',obj);
+        httpServe.post('http://localhost:8080/article/publishArticle',obj)
+        .then((res)=>{
+        console.log(res);
+      })
       }
       function getOptions(){
           httpServe.get('http://localhost:8080/article_catrgory/submitArticle')
@@ -125,14 +139,14 @@ export default {
           message.success(res.data.message)
       })};
       return {
-          editor,
-          publish,
-          titleVal,
-          getOptions,
-          options,
-          filter,
-          value: ref([]),
-          searchValue
+        editor,
+        checkPublish,
+        getOptions,
+        options,
+        filter,
+        value: ref([]),
+        obj,
+        publishArticle
       };
   }
 };

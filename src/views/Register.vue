@@ -41,12 +41,15 @@ export default {
     const onFinishFailed = errorInfo => {
       console.log('Failed:', errorInfo);
     };
+    //强密码(必须包含大小写字母和数字的组合，不能使用特殊字符，长度在 8-10 之间)：^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,10}$
     let validatePass = async (_rule, value) => {
+      let reg=/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{6,20}$/
       if (value === '') {
         return Promise.reject('请输入密码');
-      } else {
-
-        return Promise.resolve();
+      } else if(!reg.test(value)){
+        return Promise.reject("必须包含大小写字母和数字的组合，不能使用特殊字符，长度在 6-20 之间");;
+      }else{
+        return Promise.resolve()
       }
     };
      let validatePass2 = async (_rule, value) => {
@@ -101,6 +104,10 @@ export default {
     httpServe.post('http://localhost:8080/user/register',value)
     .then((res)=>{
     console.log(res)
+    if(res.data.status!=200){
+      message.info(res.data.message)
+      return false
+    }
     message.success(res.data)
     this.$router.push('/login')
   })

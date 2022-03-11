@@ -50,21 +50,29 @@ methods:{
   submit(value){
     httpServe.post('http://localhost:8080/user/login',value)
     .then((res)=>{
-    console.log(res)
-    message.success(res.data)
-    this.$router.push({
-      name:"index",
-      params:{
-       username:''||undefined
-      },
-      query:{
-        user:this.formState.username.toUpperCase()
+      console.log(res);
+      if(res.data.status>=200&&res.data.status<400){
+        this.$store.commit("CHANGE_STATUS", true);
+        this.$store.commit("CHANGE_UNAME", this.formState.username);
+        localStorage.setItem("Flag", "isLogin");
+        this.$store.commit("TOKEN",res.data.data)
+        localStorage.setItem("ZL_Token",res.data.data)
+        message.success(res.data.message)
+        this.$router.push({
+          name:"index",
+          params:{
+          username:''||undefined
+          },
+          query:{
+            user:this.formState.username.toUpperCase()
+          }
+        })
+      }else{
+        message.info(res.data.message)
       }
     })
-  })
   }
-
-    },
+},
 }
 </script>
 

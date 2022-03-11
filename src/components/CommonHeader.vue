@@ -18,8 +18,26 @@
                 <span>签到</span>
             </div>
               <a-badge dot><mail-outlined style="fontSize:25px" title="消息中心"/></a-badge>
-            <!-- 登录时 -->
-            <div v-if="$route.query.user">
+            <div>
+                <a-popover placement="topLeft">
+                    <template #content v-if="isLogin">
+                       <p @click="loginOut">退出账号</p> 
+                    </template>
+                    <router-link to="/personalCenter">
+                        <a-avatar size="large">
+                            <template #icon><UserOutlined /></template>
+                        </a-avatar>
+                    </router-link>
+                    <span v-if="isLogin">{{userName}}</span>
+                </a-popover>
+             
+            </div>
+            <!-- <router-link to="/login" v-else>
+                <a-avatar size="large">
+                    <template #icon><UserOutlined /></template>
+                </a-avatar>
+            </router-link> -->
+            <!-- <div v-if="$route.query.user">
               
                 <a-popover placement="topLeft">
                     <template #content>
@@ -34,12 +52,12 @@
                 </a-popover>
              
             </div>
-            <!-- 未登录时 -->
+            
             <router-link to="/login" v-else>
                 <a-avatar size="large">
                     <template #icon><UserOutlined /></template>
                 </a-avatar>
-            </router-link>
+            </router-link> -->
             
         </div>
 </div>
@@ -64,7 +82,9 @@
             已关注
             </a-menu-item>
             <a-menu-item key="publish">
-                <a-button >发布</a-button>
+                <router-link to="/publish">
+                    <a-button >发布</a-button> 
+                </router-link>
             </a-menu-item>
         </a-menu>
     </div>
@@ -73,8 +93,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import httpServe from '../api/request'
-import {MailOutlined,CalendarOutlined,UserOutlined,UnorderedListOutlined} from '@ant-design/icons-vue';
+import { MailOutlined , CalendarOutlined , UserOutlined , UnorderedListOutlined } from '@ant-design/icons-vue';
 export default {
 components: {
     MailOutlined,
@@ -82,6 +103,9 @@ components: {
     UserOutlined,
     UnorderedListOutlined,
     },
+      computed: {
+    ...mapState({isLogin:'isLogin',userName:'userName'}),
+  },
     data() {
         return {
             categoryList:[]
@@ -89,8 +113,14 @@ components: {
     },
     created() {
         this.getAllGategory()
+        console.log('11111111111111111111111111',this.$store.state.isLogin);
     },
     methods: {
+        loginOut(){
+            this.$store.commit('CHANGE_STATUS',false)
+            localStorage.removeItem('Flag')
+            this.$router.push('/index')
+        },
         getAllGategory(){
             httpServe.get('http://localhost:8080/article_catrgory/getAllCategory')
             .then((res)=>{
@@ -102,7 +132,7 @@ components: {
 </script>
 
 <style lang="less" scoped>
-  .tabbar{
+    .tabbar{
         margin: 0 250px;
         background-color: #fff;
         height: 70px;
@@ -116,7 +146,7 @@ components: {
             justify-content: space-around;
         }
     }
-     .pick{
+    .pick{
         padding: 0 250px;
         background-color: #0B614B;
         height: 50px;
