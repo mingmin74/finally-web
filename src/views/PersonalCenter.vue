@@ -12,18 +12,18 @@
             <div>id:28374897498</div>
         </div>
         <ul style="text-align:left;padding:0">
-            <li :class="{selected:index===pattern}" id="list_border" v-for="(item,index) in mine" :key="index"  @click="changeLi(item,index)">
-                <icon-font  :type="item.icon" />
-                <span style="padding-right:50px">{{item.label}} </span> 
-                <a-badge :count="index+1" :number-style="{ backgroundColor: '#52c41a' }" />
-            </li>
+          <li :class="{selected:index===pattern}" id="list_border" v-for="(item,index) in mine" :key="index"  @click="changeLi(item,index)">
+              <icon-font  :type="item.icon" />
+              <span style="padding-right:50px">{{item.label}} </span> 
+              <a-badge :count="index+1" :number-style="{ backgroundColor: '#52c41a' }" />
+          </li>
         </ul>
     </a-col>
     <a-col :span="17"  :offset="1" class="person_right">
-        <my-attention v-if="pattern=='0'"></my-attention>
-        <my-publication v-if="pattern=='1'"></my-publication>
-        <my-comments v-if="pattern=='2'"></my-comments>
-        <my-message v-if="pattern=='3'"></my-message>
+      <my-attention v-if="pattern=='0'"></my-attention>
+      <my-publication v-if="pattern=='1'"></my-publication>
+      <my-comments v-if="pattern=='2'"></my-comments>
+      <my-message v-if="pattern=='3'"></my-message>
     </a-col>
   </a-row>
   </div>
@@ -63,11 +63,7 @@ export default {
   methods: {
         changeLi(item, index) {
         this.pattern = index;
-        // this.selectItem = item;
         },
-    //   patternChange(e){
-    //       this.pattern = e.target.value;
-    //   }
   },
 }
 </script>

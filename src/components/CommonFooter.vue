@@ -33,18 +33,17 @@ export default {
 
 <style lang="less" scoped>
 .common_footer{
-    position: absolute;
-
+    position: relative;
     bottom: 0;
-     background-color: #eefaec;
-     height: 250px;
-     width: 100%;
-.footer_end{
-    background-color: #ddfad8;
-    position: absolute;
-    left: 0;
-    bottom: 0;
+    background-color: #eefaec;
+    height: 250px;
     width: 100%;
-}
+    .footer_end{
+        background-color: #ddfad8;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+    }
 }
 </style>

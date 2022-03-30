@@ -28,12 +28,15 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
+import moment from "moment";
+import { useStore } from 'vuex'
 import httpServe from '../api/request'
 import { AppstoreOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import hljs from 'highlight.js'
 import 'highlight.js/styles/monokai-sublime.css'
-import { onMounted, onBeforeUnmount, ref, reactive } from 'vue';
+import { onMounted, onBeforeUnmount, ref, reactive ,computed} from 'vue';
 import WangEditor from 'wangeditor';
 
 export default {
@@ -41,19 +44,25 @@ export default {
     AppstoreOutlined
   },
   setup() {
+    const Router = useRouter()
+    let store = useStore()
     const filter = (inputValue, path) => {
       return path.some(option => option.label.indexOf(inputValue) > -1);
     };
-    // const searchValue = ref();
     const options=ref([])
-    // const titleVal = ref();
     const editor = ref();
     let instance;
+    let author_id = computed(()=>{
+      return store.state.authorId
+    })
     const obj=reactive({
       title:'',
       content:'',
-      category:''
+      category:'',
+      author_id:author_id.value,
+      publishTime:''
     })
+    const token=localStorage.getItem('ZL_Token')
     onMounted(() => {
       getOptions()
       instance = new WangEditor(editor.value);
@@ -114,12 +123,27 @@ export default {
     }
       function publishArticle(){
         if(!checkPublish()){
-          console.log('不行');
-          return
+          return false
         }
+        let publishTime=moment().format("YYYY-MM-DD HH:mm")
+        obj.publishTime=publishTime
         console.log('obj---------------------',obj);
-        httpServe.post('http://localhost:8080/article/publishArticle',obj)
+        httpServe({
+          method: 'post',
+          url:'http://localhost:8080/article/publishArticle',
+          data:obj,
+          headers:{
+            "Authorization": token
+          }
+        })
         .then((res)=>{
+          if(res.data.status!=200){
+            message.info(res.data.message)
+          }else if(res.data.status>=200&&res.data.status<400){
+            console.log('发布成功');
+            Router.push('/publishSuccessfully')
+          }
+          
         console.log(res);
       })
       }
@@ -127,7 +151,7 @@ export default {
           httpServe.get('http://localhost:8080/article_catrgory/submitArticle')
           .then((res)=>{
           let data=res.data.data
-          data=data.map(item=>{
+          data = data.map(item=>{
           if(item.child){
             item.child=item.child.map(element=>{
               return {value:element.topic_id,label:element.topic_title}
@@ -136,7 +160,6 @@ export default {
           return {label:item.category_title,value:item.category_id,children:item.child}
           })
           options.value=data
-          message.success(res.data.message)
       })};
       return {
         editor,
@@ -146,7 +169,8 @@ export default {
         filter,
         value: ref([]),
         obj,
-        publishArticle
+        publishArticle,
+        token
       };
   }
 };

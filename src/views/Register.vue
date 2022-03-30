@@ -1,14 +1,15 @@
 <template>
-<div class="register">
+  <div class="register">
     <a-form
-    name="custom-validation"
-    :model="formState"
-    :rules="rules"
-    v-bind="layout"
-    @finish="onFinish"
-    @validate="handleValidate"
-    @finishFailed="onFinishFailed"
-  >
+      class="right"
+      name="custom-validation"
+      :model="formState"
+      :rules="rules"
+      v-bind="layout"
+      @finish="onFinish"
+      @validate="handleValidate"
+      @finishFailed="onFinishFailed"
+    >
     <a-form-item  label="用户名" name="username">
       <a-input v-model:value="formState.username"   />
     </a-form-item>
@@ -21,18 +22,19 @@
     <a-form-item  label="确认密码" name="checkpass">
       <a-input v-model:value="formState.checkpass" type="password"  />
     </a-form-item>
-    <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
+    <a-form-item :wrapper-col="{ span: 14, offset: 8 }">
+      <a-button style="color:rgb(9,166,120);margin-right:60px"  @click="handlelogin">登录</a-button>
       <a-button type="primary" html-type="submit">注册</a-button>
     </a-form-item>
-  </a-form>
-</div>
-  
+    </a-form>
+  </div>
 </template>
+
 <script>
+
 import { message } from 'ant-design-vue';
 import httpServe from '../api/request'
 export default {
-   
   data() {
     const onFinish = values => {
       console.log('Success:', values);
@@ -47,7 +49,7 @@ export default {
       if (value === '') {
         return Promise.reject('请输入密码');
       } else if(!reg.test(value)){
-        return Promise.reject("必须包含大小写字母和数字的组合，不能使用特殊字符，长度在 6-20 之间");;
+        return Promise.reject("必须包含大小写字母和数字的组合，不能使用特殊字符，长度在 6-20 之间");
       }else{
         return Promise.resolve()
       }
@@ -79,10 +81,10 @@ export default {
     };
      const layout = {
       labelCol: {
-        span: 4,
+        span: 8,
       },
       wrapperCol: {
-        span: 14,
+        span: 12,
       },
     };
     return {
@@ -96,19 +98,22 @@ export default {
       onFinish,
       onFinishFailed,
       rules
-
     }
   },
   methods: {
+    handlelogin(){
+    localStorage.setItem('flag','login')
+    this.$store.commit('CHANGE_FLAG','login')
+    },
     submit(value){
     httpServe.post('http://localhost:8080/user/register',value)
     .then((res)=>{
     console.log(res)
-    if(res.data.status!=200){
+    if(res.data.data!=200){
       message.info(res.data.message)
       return false
     }
-    message.success(res.data)
+    message.success(res.data.message)
     this.$router.push('/login')
   })
     }
@@ -119,13 +124,8 @@ export default {
 
 <style lang="less" scoped>
 .register{
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
-    padding: 20px;
-    width: 400px;
-    height: 200px;
-    background-color: rgb(235, 214, 214);
+  width: 375px;
+  height: 350px;
+  padding-top: 50px;
 }
 </style>

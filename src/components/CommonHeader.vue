@@ -20,45 +20,18 @@
               <a-badge dot><mail-outlined style="fontSize:25px" title="消息中心"/></a-badge>
             <div>
                 <a-popover placement="topLeft">
-                    <template #content v-if="isLogin">
-                       <p @click="loginOut">退出账号</p> 
+                    <template #content>
+                       <p v-if="isLogin" @click="loginOut">退出账号</p> 
+                       <router-link to="/loginRegister" ><p v-if="!isLogin" @click="handleLogin">去登陆</p></router-link> 
+                       <router-link to="/personalCenter"><p>个人中心</p></router-link>
                     </template>
-                    <router-link to="/personalCenter">
-                        <a-avatar size="large">
-                            <template #icon><UserOutlined /></template>
-                        </a-avatar>
-                    </router-link>
+                    <a-avatar size="large">
+                        <template #icon><UserOutlined /></template>
+                    </a-avatar>
                     <span v-if="isLogin">{{userName}}</span>
                 </a-popover>
              
             </div>
-            <!-- <router-link to="/login" v-else>
-                <a-avatar size="large">
-                    <template #icon><UserOutlined /></template>
-                </a-avatar>
-            </router-link> -->
-            <!-- <div v-if="$route.query.user">
-              
-                <a-popover placement="topLeft">
-                    <template #content>
-                        <router-link to="/index">退出账号</router-link>
-                    </template>
-                    <router-link to="/personalCenter">
-                        <a-avatar size="large">
-                            <template #icon><UserOutlined /></template>
-                        </a-avatar>
-                    </router-link>
-                    <span>{{$route.query.user}}</span>
-                </a-popover>
-             
-            </div>
-            
-            <router-link to="/login" v-else>
-                <a-avatar size="large">
-                    <template #icon><UserOutlined /></template>
-                </a-avatar>
-            </router-link> -->
-            
         </div>
 </div>
      <div class="pick">
@@ -115,10 +88,25 @@ components: {
         this.getAllGategory()
         console.log('11111111111111111111111111',this.$store.state.isLogin);
     },
+    mounted(){
+    //组件挂载后,尝试从浏览器存储中获取数据
+    let uname=localStorage.getItem("userName");
+    console.log('uname--------------',uname);
+    //如果能获取到,则代表登录过,直接将获取的值赋给vuex中的变量;若没有获取到就取空值,则没有登录
+    this.$store.commit('CHANGE_UNAME',uname||'')
+  },
     methods: {
+        handleLogin(){
+            this.$router.push('/loginRegister')
+            this.$store.commit('CHANGE_FLAG','login')
+            localStorage.setItem('flag','login')
+        },
         loginOut(){
             this.$store.commit('CHANGE_STATUS',false)
-            localStorage.removeItem('Flag')
+            localStorage.removeItem('isLogin')
+             localStorage.removeItem('author_id')
+            localStorage.removeItem('ZL_token')
+            localStorage.removeItem('userName')
             this.$router.push('/index')
         },
         getAllGategory(){

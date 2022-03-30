@@ -1,6 +1,6 @@
 <template>
 <div id="app">
-  <common-header></common-header>
+  <common-header v-if='$route.meta.isShowHeader'></common-header>
   <router-view></router-view>
   <!-- <common-footer></common-footer> -->
 </div>
@@ -12,7 +12,6 @@ import CommonHeader from './components/CommonHeader'
 export default {
   name: 'App',
   components: {
-
     CommonHeader,
   }
 }

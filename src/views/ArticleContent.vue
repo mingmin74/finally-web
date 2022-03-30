@@ -1,5 +1,5 @@
 <template>
-  <div class="search">345search</div>
+  <div>文章详情页面</div>
 </template>
 
 <script>

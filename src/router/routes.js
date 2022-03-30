@@ -8,7 +8,17 @@ const  routes=[
         path:"/login",
         component:()=> import('@/views/Login'),
         meta: {
-            isLogin: false
+            isLogin: false,
+            isShowHeader:false
+        }
+    },
+     //登录和注册页面
+     {
+        path:"/loginRegister",
+        component:()=> import('@/views/loginRegister'),
+        meta: {
+            isLogin: false,
+            isShowHeader:false
         }
     },
     //注册
@@ -16,7 +26,8 @@ const  routes=[
         path:"/register",
         component:()=> import('@/views/Register'),
         meta: {
-            isLogin: false
+            isLogin: false,
+            isShowHeader:false
         }
     },
     //首页
@@ -25,13 +36,29 @@ const  routes=[
         component:()=> import('@/views/Index'),
         name:'index',
         meta: {
-            isLogin: false
+            isLogin: false,
+            isShowHeader:true
         }
     },
+    // 发布成功页
     {
-        path:"/search",
-        component:()=> import('@/views/Search'),
-        name:'search'
+        path:"/publishSuccessfully",
+        component:()=> import('@/views/PublishSuccessfully'),
+        name:'publishSuccessfully',
+        meta: {
+            isLogin: true,
+            isShowHeader:true
+        }
+    },
+    //文章详情页
+    {
+        path:"/ArticleContent",
+        component:()=> import('@/views/ArticleContent'),
+        name:'ArticleContent',
+        meta: {
+            isLogin: true,
+            isShowHeader:true
+        }
     },
     //个人中心
     {
@@ -39,7 +66,8 @@ const  routes=[
         component:()=> import('@/views/PersonalCenter'),
         name:'personalcenter',
         meta: {
-            isLogin: true
+            isLogin: true,
+            isShowHeader:true
         }
     },
     //发布文章
@@ -48,14 +76,19 @@ const  routes=[
         component:()=> import('@/views/PublishArticle'),
         name:'publish',
         meta: {
-            isLogin: true
+            isLogin: true,
+            isShowHeader:true
         }
     },
     //文章分类
     {
         path:"/category",
         component:()=> import('@/views/ArticleCategory'),
-        name:'category'
+        name:'category',
+        meta: {
+            isLogin: true,
+            isShowHeader:true
+        }
     },
 ]
 export default routes
