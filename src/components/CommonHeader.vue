@@ -26,7 +26,11 @@
                        <router-link to="/personalCenter"><p>个人中心</p></router-link>
                     </template>
                     <a-avatar size="large">
-                        <template #icon><UserOutlined /></template>
+                         <!-- 默认头像 -->
+                        <template #icon>
+                            <img :src="userPic" v-if='userPic' alt="" srcset="">
+                            <UserOutlined v-if='userPic' />
+                            </template>
                     </a-avatar>
                     <span v-if="isLogin">{{userName}}</span>
                 </a-popover>
@@ -77,7 +81,7 @@ components: {
     UnorderedListOutlined,
     },
       computed: {
-    ...mapState({isLogin:'isLogin',userName:'userName'}),
+    ...mapState({isLogin:'isLogin',userName:'userName',userPic:'userPic'}),
   },
     data() {
         return {
@@ -87,11 +91,11 @@ components: {
     created() {
         this.getAllGategory()
         console.log('11111111111111111111111111',this.$store.state.isLogin);
+        console.log('12222222222222222222222222',this.$store.state.userPic);
     },
     mounted(){
     //组件挂载后,尝试从浏览器存储中获取数据
     let uname=localStorage.getItem("userName");
-    console.log('uname--------------',uname);
     //如果能获取到,则代表登录过,直接将获取的值赋给vuex中的变量;若没有获取到就取空值,则没有登录
     this.$store.commit('CHANGE_UNAME',uname||'')
   },
@@ -104,9 +108,10 @@ components: {
         loginOut(){
             this.$store.commit('CHANGE_STATUS',false)
             localStorage.removeItem('isLogin')
-             localStorage.removeItem('author_id')
+            localStorage.removeItem('author_id')
             localStorage.removeItem('ZL_token')
             localStorage.removeItem('userName')
+            localStorage.removeItem('userPic')
             this.$router.push('/index')
         },
         getAllGategory(){

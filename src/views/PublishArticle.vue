@@ -60,16 +60,17 @@ export default {
       content:'',
       category:'',
       author_id:author_id.value,
-      publishTime:''
+      publishTime:'',
+      articleImg:''
     })
-    const token=localStorage.getItem('ZL_Token')
+    const token = localStorage.getItem('ZL_Token')
     onMounted(() => {
       getOptions()
       instance = new WangEditor(editor.value);
       Object.assign(instance.config, {
-          onchange() {
-              console.log('change');
-          },
+        onchange() {
+          console.log('change');
+        },
       });
       instance.config.menus = [
           'link',
@@ -88,12 +89,27 @@ export default {
       instance.config.showFullScreen = false
       // 隐藏插入网络图片的功能
       instance.config.showLinkImg = false
+      //配置插入图片的请求头
+      instance.config.uploadImgHeaders = {
+        "Authorization": token
+      }
+      instance.config.uploadFileName = 'file';
       // 配置 server 接口地址
-      instance.config.uploadImgServer = '/upload-img'
+      instance.config.uploadImgServer = `http://localhost:8080/article/uploadImg?author_id=${author_id.value}`,
+      instance.config.uploadImgHooks = {
+        //回显
+        customInsert: (insertImg, result, editor) => {
+          console.log(result);
+          console.log(editor);
+          let url = result.data.articleImg
+          insertImg(url);
+        }
+      },
       // 编辑区域 focus（聚焦）和 blur（失焦）时触发的回调函数。
       instance.config.onblur = function (newHtml) {
       console.log('onblur', newHtml)
-      obj.content=newHtml
+     
+      obj.content = newHtml
         // 获取最新的 html 内容
       }
       instance.create();
@@ -148,19 +164,20 @@ export default {
       })
       }
       function getOptions(){
-          httpServe.get('http://localhost:8080/article_catrgory/submitArticle')
-          .then((res)=>{
-          let data=res.data.data
-          data = data.map(item=>{
-          if(item.child){
-            item.child=item.child.map(element=>{
-              return {value:element.topic_id,label:element.topic_title}
-            })
-          }
-          return {label:item.category_title,value:item.category_id,children:item.child}
+        httpServe.get('http://localhost:8080/article_catrgory/submitArticle')
+        .then((res)=>{
+        let data=res.data.data
+        data = data.map(item=>{
+        if(item.child){
+          item.child=item.child.map(element=>{
+            return {value:element.topic_id,label:element.topic_title}
           })
-          options.value=data
-      })};
+        }
+        return {label:item.category_title,value:item.category_id,children:item.child}
+        })
+        console.log(data);
+        options.value = data
+      })}
       return {
         editor,
         checkPublish,

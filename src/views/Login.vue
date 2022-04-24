@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import { message } from 'ant-design-vue';
 import httpServe from '../api/request'
 export default {
@@ -60,10 +59,13 @@ methods:{
         this.$store.commit("CHANGE_STATUS", true);
         this.$store.commit("CHANGE_UNAME", res.data.data.username);
         this.$store.commit("AUTHOR_ID",res.data.data.id)
+        this.$store.commit("TOKEN",res.data.data.token)
+        this.$store.commit("CHANGE_PIC",res.data.data.userpic)
         localStorage.setItem("isLogin", true);
         localStorage.setItem("ZL_Token",res.data.data.token)
         localStorage.setItem('userName',res.data.data.username)
         localStorage.setItem('author_id',res.data.data.id)
+        localStorage.setItem('userPic',res.data.data.userpic)
         message.success(res.data.message)
         this.$router.push({
           name:"index",

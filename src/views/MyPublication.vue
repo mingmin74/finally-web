@@ -13,8 +13,8 @@
 <script>
 import { useStore } from 'vuex'
 import httpServe from '../api/request'
-import { message } from 'ant-design-vue';
-import { onMounted, onBeforeUnmount, ref, reactive ,computed} from 'vue';
+// import { message } from 'ant-design-vue';
+import { onMounted,computed} from 'vue';
 export default {
   setup() {
     let store = useStore()
@@ -51,8 +51,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.my_publish{
-
-}
 </style>
 

@@ -24,6 +24,7 @@
       <my-publication v-if="pattern=='1'"></my-publication>
       <my-comments v-if="pattern=='2'"></my-comments>
       <my-message v-if="pattern=='3'"></my-message>
+      <my-install v-if="pattern=='4'"></my-install>
     </a-col>
   </a-row>
   </div>
@@ -40,6 +41,7 @@ import MyAttention from './MyAttention.vue';
 import MyPublication from './MyPublication.vue';
 import MyComments from './MyComments.vue';
 import MyMessage from './MyMessage.vue';
+import MyInstall from './MyInstall.vue';
 export default {
  components: {
   AntDesignOutlined,
@@ -47,14 +49,16 @@ export default {
   MyPublication,
   MyComments,
   MyMessage,
-  IconFont
+  IconFont,
+  MyInstall
   },
   data() {
       const mine=[
         {label:'关注的部落',value:'0',icon:'icon-guanzhu'},
         {label:'我的发表',value:'1',icon:'icon-fabiaojielun'},
         {label:'我的评论',value:'2',icon:'icon-pinglun'},
-        {label:'留言消息',value:'3',icon:'icon-feiji'}]
+        {label:'留言消息',value:'3',icon:'icon-feiji'},
+        {label:'我的设置',value:'4',icon:'icon-feiji'}]
       return {
            pattern: '0',
            mine

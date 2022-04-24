@@ -22,7 +22,7 @@
     </a-row>
       </div> 
     </div>
-    <common-list :data='articleData'></common-list>
+    <common-list :articleData='articleData'></common-list>
     <common-footer></common-footer>
   </div>
 </template>
@@ -35,7 +35,7 @@ const IconFont = createFromIconfontCN({
 import ContentSwiper from './ContentSwiper.vue'
 import CommonFooter from '../components/CommonFooter.vue';
 import CommonList from '../components/CommonList.vue'
-import httpServe from '@/api/request';
+
 export default {
   components: {
     ContentSwiper,
@@ -43,24 +43,16 @@ export default {
     CommonFooter,
     CommonList
   },
-  data(){
+  setup(){
+   
+ 
     return {
-      inputVal:'',
-      currentPick:1,
-      buttonWidth: 70,
-      articleData:[]
+     
     }
   },
-  methods: {
-    getArticleData(){
-      httpServe({
 
-      })
-    }
-  },
-  mounted() {
     
-  },
+ 
 
 }
 </script>

@@ -5,7 +5,8 @@ export default createStore({
         userName:localStorage.getItem('userName') || '',//用户名,
         token:localStorage.getItem("ZL_Token") || '',
         authorId:localStorage.getItem("author_id") || '',
-        flag:localStorage.getItem("flag")||undefined
+        flag:localStorage.getItem("flag")||undefined,
+        userPic:localStorage.getItem("userPic") || ''
     },
     mutations: {
     // 进行数据更新，改变数据状态
@@ -23,6 +24,9 @@ export default createStore({
         },
         TOKEN(state,value){
             state.token=value
+        },
+        CHANGE_PIC(state,value){
+            state.userPic=value
         }
     },
     actions: {
