@@ -61,7 +61,7 @@ export default {
       category:'',
       author_id:author_id.value,
       publishTime:'',
-      articleImg:''
+      article_img:''
     })
     const token = localStorage.getItem('ZL_Token')
     onMounted(() => {
@@ -99,8 +99,6 @@ export default {
       instance.config.uploadImgHooks = {
         //回显
         customInsert: (insertImg, result, editor) => {
-          console.log(result);
-          console.log(editor);
           let url = result.data.articleImg
           insertImg(url);
         }
@@ -108,17 +106,37 @@ export default {
       // 编辑区域 focus（聚焦）和 blur（失焦）时触发的回调函数。
       instance.config.onblur = function (newHtml) {
       console.log('onblur', newHtml)
-     
-      obj.content = newHtml
-        // 获取最新的 html 内容
-      }
-      instance.create();
-      });
-      
+        var imgReg = /<img.*?(?:>|\/>)/gi;
+        var srcReg = /src=['"]?([^'"]*)['"]?/i;
+        var arr = newHtml.match(imgReg);  // arr 为包含所有img标签的数组
+        console.log('-----------',arr);
+        if(arr){
+          let a=[]
+            for (var i = 0; i < arr.length; i++) {
+              var src = arr[i].match(srcReg);
+              a.push(src[1])
+            }
+            console.log('111111111111',a);
+            obj.article_img=a
+            arr.forEach(item=>{
+              newHtml=newHtml.replace(item," ")
+            })
+        }
+    
+            let words =newHtml.replace(/<[^<>]+>/g, "").replace(/&nbsp;/gi, ""); //这里是去除标签
+      words=words.replace(/\s/g, "")
+      console.log(words);    
+          console.log('newHtml',newHtml);
+        obj.content = words
+          // 获取最新的 html 内容
+        }
+        instance.create();
+        });
     onBeforeUnmount(() => {
       instance.destroy();
       instance = null;
     });
+  
     function checkPublish(){
       if(!obj.title){
         message.info('标题为空不可提交')
@@ -177,8 +195,10 @@ export default {
         })
         console.log(data);
         options.value = data
+        console.log(options);
       })}
       return {
+      
         editor,
         checkPublish,
         getOptions,

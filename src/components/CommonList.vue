@@ -8,6 +8,7 @@
             <component v-bind:is="type" style="margin-right: 8px" />
             {{ text }}
           </span>
+          <div>{{item.author_id}}</div>
         </template>
         <template #extra>
           <img
@@ -20,7 +21,7 @@
           <template #title>
             <a :href="item.href">{{ item.title }}</a>
           </template>
-          <template #avatar><a-avatar :src="item.avatar" /></template>
+          
         </a-list-item-meta>
         {{ item.article_content }}
       </a-list-item>
